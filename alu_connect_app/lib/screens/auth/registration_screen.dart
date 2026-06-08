@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../constants/app_colors.dart';
 import '../../data/app_data.dart';
+import '../../providers/user_provider.dart';
 import '../home_screen.dart';
 
 class RegistrationScreen extends StatefulWidget{
@@ -56,10 +58,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       return;
     }
 
-    // All is good - save information
+    // Save credentials and name
     registeredUsers[email] = password;
+    registeredUserNames[email] = name;
 
-    // Go to home
+    // Set user profile in provider
+    context.read<UserProvider>().setUserFromLogin(name: name, email: email);
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const HomeScreen()),

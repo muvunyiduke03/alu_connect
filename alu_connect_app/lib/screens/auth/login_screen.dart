@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../constants/app_colors.dart';
-import 'registration_screen.dart';
-import '../home_screen.dart';
 import '../../data/app_data.dart';
+import '../../providers/user_provider.dart';
+import '../home_screen.dart';
+import 'registration_screen.dart';
 
 class LoginScreen extends StatefulWidget{
   const LoginScreen({super.key});
@@ -41,7 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    //Correct credentials
+    // Set user profile in provider
+    final name = registeredUserNames[email] ?? email.split('@')[0];
+    context.read<UserProvider>().setUserFromLogin(name: name, email: email);
+
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (_) => const HomeScreen()),
