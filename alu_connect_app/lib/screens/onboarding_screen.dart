@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../constants/app_colors.dart';
+import '../providers/user_provider.dart';
 import 'auth/login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget{
@@ -34,10 +36,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // When User taps continue or Get Started
   void _nextStep() {
-    if(_currentStep < 2){
-      setState(() => _currentStep++); //Move to the next step
+    if (_currentStep < 2) {
+      setState(() => _currentStep++);
     } else {
-      // Moves to login
+      context.read<UserProvider>().setOnboardingData(
+        interests: List.from(_selectedInterests),
+        role: _selectedRole,
+        intake: _selectedIntake,
+      );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),

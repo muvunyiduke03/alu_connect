@@ -1,103 +1,45 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
- class HomeScreen extends StatelessWidget{
+import 'calendar_screen.dart';
+import 'profile_screen.dart';
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+
+  static const List<Widget> _screens = [
+    _PlaceholderScreen(label: 'Feed', icon: Icons.home_rounded),
+    _PlaceholderScreen(label: 'Explore', icon: Icons.explore_rounded),
+    _PlaceholderScreen(label: 'Communities', icon: Icons.group_rounded),
+    CalendarScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.offWhite,
-      body: SafeArea(
-        child: Column(
-          children: [
-            //Top header
-            Container(
-              width: double.infinity,
-              color: AppColors.navyBlue,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 20,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  //Logo
-                  RichText(
-                    text: const TextSpan(
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: 'ALU',
-                          style: TextStyle(color: AppColors.white),
-                        ),
-                        TextSpan(
-                          text: 'Connect',
-                          style: TextStyle(color: AppColors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  //Notification Icon
-                  const Icon(
-                    Icons.notifications_outlined,
-                    color: AppColors.white,
-                    size: 24,
-                  ),
-                ],
-              ),
-            ),
-
-            //Body (Will be replaced by real feed)
-            const Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.check_circle_rounded,
-                      color: AppColors.red,
-                      size: 64,
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Welcome',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.navyBlue,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Feed coming soon.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.gray,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-          ],
-        ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
       ),
-
-      //Bottom navigation (Will be completed later in task 4)
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
         backgroundColor: AppColors.white,
         selectedItemColor: AppColors.red,
+        unselectedItemColor: AppColors.gray,
         type: BottomNavigationBarType.fixed,
-        selectedFontSize: 15,
+        selectedFontSize: 11,
         unselectedFontSize: 10,
-        currentIndex: 0,
-        items: const[
+        elevation: 8,
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             activeIcon: Icon(Icons.home_rounded),
@@ -127,4 +69,40 @@ import '../constants/app_colors.dart';
       ),
     );
   }
- }
+}
+
+class _PlaceholderScreen extends StatelessWidget {
+  final String label;
+  final IconData icon;
+
+  const _PlaceholderScreen({required this.label, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.offWhite,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 56, color: AppColors.lightGray),
+            const SizedBox(height: 14),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: AppColors.navyBlue,
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Coming soon',
+              style: TextStyle(fontSize: 13, color: AppColors.gray),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,4 +1,5 @@
-// This acts our starage of data
-//It will be used for login and registration to access it.
-
+// Runtime storage for registered users (email → password)
 Map<String, String> registeredUsers = {};
+
+// Runtime storage for user display names (email → name)
+Map<String, String> registeredUserNames = {};
