@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import 'feed_screen.dart';
 import 'calendar_screen.dart';
 import 'profile_screen.dart';
 
@@ -14,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   static const List<Widget> _screens = [
-    _PlaceholderScreen(label: 'Feed', icon: Icons.home_rounded),
+    FeedScreen(),
     _PlaceholderScreen(label: 'Explore', icon: Icons.explore_rounded),
     _PlaceholderScreen(label: 'Communities', icon: Icons.group_rounded),
     CalendarScreen(),
@@ -25,10 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.offWhite,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
