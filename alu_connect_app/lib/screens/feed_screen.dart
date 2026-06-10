@@ -27,7 +27,20 @@ class _FeedScreenState extends State<FeedScreen> {
             padding: const EdgeInsets.only(right: 16),
             child: GestureDetector(
               onTap: () => _showCreateMenu(context),
-              child: const Icon(Icons.add_circle_outline, size: 24),
+              child: Tooltip(
+                message: 'Create',
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.add_circle_outline, size: 22),
+                    SizedBox(height: 2),
+                    Text(
+                      'Create',
+                      style: TextStyle(fontSize: 9, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],

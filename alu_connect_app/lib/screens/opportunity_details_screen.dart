@@ -38,12 +38,44 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: GestureDetector(
-              onTap: _shareOpportunity,
-              child: const Icon(Icons.share_outlined, size: 22),
-            ),
+          Consumer<FeedProvider>(
+            builder: (context, feedProvider, _) {
+              final isRsvpd = feedProvider.isRsvpd(widget.opportunityId);
+              return Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        feedProvider.toggleRsvp(widget.opportunityId);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              isRsvpd
+                                  ? 'Removed from your opportunities'
+                                  : 'Added to your opportunities',
+                            ),
+                            backgroundColor:
+                                isRsvpd ? AppColors.gray : AppColors.red,
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        isRsvpd ? Icons.bookmark : Icons.bookmark_outline,
+                        color: isRsvpd ? AppColors.red : AppColors.white,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    GestureDetector(
+                      onTap: _shareOpportunity,
+                      child: const Icon(Icons.share_outlined, size: 22),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -105,9 +137,10 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
               child: Text(
                 opportunity.title,
                 style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 28,
                   fontWeight: FontWeight.w700,
                   color: AppColors.navyBlue,
+                  height: 1.2,
                 ),
               ),
             ),
@@ -116,7 +149,7 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -128,7 +161,7 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
                       label: 'Date & Time',
                       value: '$formattedDate at ${opportunity.time}',
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     _buildDetailRow(
                       icon: Icons.location_on_outlined,
                       label: 'Location',
@@ -148,65 +181,79 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
                   const Text(
                     'About',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                       color: AppColors.navyBlue,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Text(
                     opportunity.description,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 15,
                       color: AppColors.gray,
-                      height: 1.6,
+                      height: 1.7,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             // Organizer Info
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      opportunity.organizer.avatar,
-                      style: const TextStyle(fontSize: 32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Organizer',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.navyBlue,
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Organized by',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: AppColors.gray,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            opportunity.organizer.name,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.navyBlue,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ],
-                ),
+                    child: Row(
+                      children: [
+                        Text(
+                          opportunity.organizer.avatar,
+                          style: const TextStyle(fontSize: 40),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                opportunity.organizer.name,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.navyBlue,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              const Text(
+                                'Event Organizer',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.gray,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 20),
@@ -214,30 +261,40 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const Text(
+                          'Already Attending',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.gray,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
                         Text(
                           '${opportunity.rsvpCount}',
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: 28,
                             fontWeight: FontWeight.w700,
                             color: AppColors.red,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Already attending',
-                          style: TextStyle(fontSize: 12, color: AppColors.gray),
-                        ),
                       ],
+                    ),
+                    Icon(
+                      Icons.group_rounded,
+                      size: 48,
+                      color: AppColors.red.withValues(alpha: 0.2),
                     ),
                   ],
                 ),
@@ -245,52 +302,6 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
             ),
             const SizedBox(height: 32),
           ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          bottom: MediaQuery.of(context).padding.bottom + 16,
-          top: 12,
-        ),
-        child: Consumer<FeedProvider>(
-          builder: (context, feedProvider, _) {
-            final isRsvpd = feedProvider.isRsvpd(widget.opportunityId);
-            return GestureDetector(
-              onTap: () {
-                feedProvider.toggleRsvp(widget.opportunityId);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      isRsvpd
-                          ? 'Removed from your opportunities'
-                          : 'Added to your opportunities',
-                    ),
-                    backgroundColor: isRsvpd ? AppColors.gray : AppColors.red,
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  color: isRsvpd ? AppColors.gray : AppColors.red,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Center(
-                  child: Text(
-                    isRsvpd ? 'Remove from List' : 'RSVP Now',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.white,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
         ),
       ),
     );

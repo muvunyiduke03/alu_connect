@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../constants/app_colors.dart';
 import '../models/event_model.dart';
+import '../models/opportunity_model.dart';
 import '../providers/event_provider.dart';
+import '../providers/feed_provider.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -26,16 +28,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
           children: [
             _buildHeader(),
             Expanded(
-              child: Consumer<EventProvider>(
-                builder: (context, provider, _) {
+              child: Consumer2<EventProvider, FeedProvider>(
+                builder: (context, eventProvider, feedProvider, _) {
                   final selectedEvents =
-                      provider.eventsForDay(_selectedDay);
+                      eventProvider.eventsForDay(_selectedDay);
+                  final selectedOpportunities =
+                      _getOpportunitiesForDay(_selectedDay, feedProvider);
                   return Column(
                     children: [
-                      _buildCalendar(provider),
+                      _buildCalendar(eventProvider, feedProvider),
                       const Divider(height: 1, color: AppColors.lightGray),
                       Expanded(
-                        child: _buildEventList(selectedEvents, provider),
+                        child: _buildEventList(
+                          selectedEvents,
+                          selectedOpportunities,
+                          eventProvider,
+                        ),
                       ),
                     ],
                   );
@@ -46,6 +54,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
       ),
     );
+  }
+
+  List<OpportunityModel> _getOpportunitiesForDay(
+    DateTime day,
+    FeedProvider feedProvider,
+  ) {
+    return feedProvider.rsvpdOpportunities
+        .where((opp) =>
+            opp.date.year == day.year &&
+            opp.date.month == day.month &&
+            opp.date.day == day.day)
+        .toList();
   }
 
   Widget _buildHeader() {
@@ -84,10 +104,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildCalendar(EventProvider provider) {
+  Widget _buildCalendar(EventProvider eventProvider, FeedProvider feedProvider) {
     return Container(
       color: AppColors.white,
-      child: TableCalendar<EventModel>(
+      child: TableCalendar<dynamic>(
         firstDay: DateTime.utc(2026, 1, 1),
         lastDay: DateTime.utc(2027, 12, 31),
         focusedDay: _focusedDay,
@@ -95,7 +115,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
         selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
         eventLoader: (day) {
           final key = DateTime(day.year, day.month, day.day);
-          return provider.rsvpdEventsByDay[key] ?? [];
+          final events = eventProvider.rsvpdEventsByDay[key] ?? [];
+          final opportunities =
+              _getOpportunitiesForDay(day, feedProvider);
+          return [...events, ...opportunities];
         },
         onDaySelected: (selectedDay, focusedDay) {
           setState(() {
@@ -176,8 +199,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildEventList(List<EventModel> events, EventProvider provider) {
-    if (events.isEmpty) {
+  Widget _buildEventList(
+    List<EventModel> events,
+    List<OpportunityModel> opportunities,
+    EventProvider provider,
+  ) {
+    if (events.isEmpty && opportunities.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -189,7 +216,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             const SizedBox(height: 12),
             const Text(
-              'No RSVP\'d events this day',
+              'No RSVP\'d events or opportunities this day',
               style: TextStyle(
                 color: AppColors.gray,
                 fontSize: 14,
@@ -198,7 +225,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ),
             const SizedBox(height: 6),
             const Text(
-              'RSVP to events in the Feed to see them here.',
+              'RSVP to events or opportunities in the Feed to see them here.',
               style: TextStyle(color: AppColors.gray, fontSize: 12),
               textAlign: TextAlign.center,
             ),
@@ -221,17 +248,34 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
         const SizedBox(height: 10),
         ...events.map((event) => _CalendarEventTile(event: event)),
+        ...opportunities
+            .map((opp) => _CalendarOpportunityTile(opportunity: opp)),
       ],
     );
   }
 
   String _formatSelectedDay(DateTime day) {
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     const weekdays = [
-      'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
       'Sunday',
     ];
     return '${weekdays[day.weekday - 1]}, ${months[day.month - 1]} ${day.day}'
@@ -252,9 +296,7 @@ class _CalendarEventTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border(
-          left: BorderSide(color: event.accentColor, width: 4),
-        ),
+        border: Border(left: BorderSide(color: event.accentColor, width: 4)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.04),
@@ -327,6 +369,103 @@ class _CalendarEventTile extends StatelessWidget {
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
                 color: event.accentColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CalendarOpportunityTile extends StatelessWidget {
+  final OpportunityModel opportunity;
+
+  const _CalendarOpportunityTile({required this.opportunity});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border(
+          left: BorderSide(color: opportunity.tagColor, width: 4),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  opportunity.title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.navyBlue,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.access_time_rounded,
+                      size: 12,
+                      color: AppColors.gray,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      opportunity.time,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.gray,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    const Icon(
+                      Icons.location_on_outlined,
+                      size: 12,
+                      color: AppColors.gray,
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        opportunity.location,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.gray,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: opportunity.tagColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              opportunity.typeLabel,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: opportunity.tagColor,
               ),
             ),
           ),

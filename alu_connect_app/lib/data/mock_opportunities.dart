@@ -17,7 +17,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'Tech Innovation Club',
       id: 'org1',
-      avatar: '👨‍💻',
+      avatar: '',
     ),
     tagColor: Color(0xFF1565C0),
     rsvpCount: 45,
@@ -37,7 +37,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'AI Research Lab',
       id: 'org2',
-      avatar: '🤖',
+      avatar: '',
     ),
     tagColor: Color(0xFF7B2D8B),
     rsvpCount: 67,
@@ -57,7 +57,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'Marketing Club',
       id: 'org3',
-      avatar: '📊',
+      avatar: '',
     ),
     tagColor: Color(0xFFE07B39),
     rsvpCount: 38,
@@ -76,7 +76,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'Student Leadership Council',
       id: 'org4',
-      avatar: '👥',
+      avatar: '',
     ),
     tagColor: Color(0xFF2E7D32),
     rsvpCount: 52,
@@ -95,7 +95,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'Impact Initiative',
       id: 'org5',
-      avatar: '🌍',
+      avatar: '',
     ),
     tagColor: Color(0xFF00695C),
     rsvpCount: 41,
@@ -115,7 +115,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'ALU Developer Community',
       id: 'org6',
-      avatar: '💻',
+      avatar: '',
     ),
     tagColor: AppColors.red,
     rsvpCount: 120,
@@ -135,7 +135,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'Mobile Developers Guild',
       id: 'org7',
-      avatar: '📱',
+      avatar: '',
     ),
     tagColor: Color(0xFF1565C0),
     rsvpCount: 89,
@@ -154,7 +154,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'Green Tech Initiative',
       id: 'org8',
-      avatar: '🌱',
+      avatar: '',
     ),
     tagColor: Color(0xFF2E7D32),
     rsvpCount: 76,
@@ -174,7 +174,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'Entrepreneurship Hub',
       id: 'org9',
-      avatar: '🚀',
+      avatar: '',
     ),
     tagColor: Color(0xFFAD1457),
     rsvpCount: 95,
@@ -194,7 +194,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'ALU Ventures',
       id: 'org10',
-      avatar: '📈',
+      avatar: '',
     ),
     tagColor: Color(0xFF1565C0),
     rsvpCount: 34,
@@ -213,7 +213,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'Women in Tech Africa',
       id: 'org11',
-      avatar: '👩‍💼',
+      avatar: '',
     ),
     tagColor: Color(0xFFE07B39),
     rsvpCount: 62,
@@ -232,7 +232,7 @@ final List<OpportunityModel> mockOpportunities = [
     organizer: OrganizerInfo(
       name: 'SaaS Community Africa',
       id: 'org12',
-      avatar: '💡',
+      avatar: '',
     ),
     tagColor: AppColors.navyBlue,
     rsvpCount: 28,
