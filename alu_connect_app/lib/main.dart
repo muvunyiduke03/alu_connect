@@ -7,8 +7,12 @@ import 'screens/onboarding_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/registration_screen.dart';
+import 'screens/opportunity_details_screen.dart';
+import 'screens/create_opportunity_screen.dart';
 import 'providers/user_provider.dart';
 import 'providers/event_provider.dart';
+import 'providers/feed_provider.dart';
+import 'models/opportunity_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +27,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => EventProvider()),
+        ChangeNotifierProvider(create: (_) => FeedProvider()),
       ],
       child: MaterialApp(
         title: 'ALU Connect',
@@ -47,6 +52,23 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const RegistrationScreen(),
           '/home': (context) => const HomeScreen(),
           '/settings': (context) => const SettingsScreen(),
+        },
+        onGenerateRoute: (settings) {
+          if (settings.name == '/opportunity-details') {
+            final opportunityId = settings.arguments as String;
+            return MaterialPageRoute(
+              builder: (context) =>
+                  OpportunityDetailsScreen(opportunityId: opportunityId),
+            );
+          } else if (settings.name == '/create-opportunity') {
+            final opportunityType =
+                settings.arguments as OpportunityType? ?? OpportunityType.event;
+            return MaterialPageRoute(
+              builder: (context) =>
+                  CreateOpportunityScreen(opportunityType: opportunityType),
+            );
+          }
+          return null;
         },
       ),
     );
