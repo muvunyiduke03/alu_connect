@@ -95,10 +95,10 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: opportunity.tagColor.withOpacity(0.1),
+                      color: opportunity.tagColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: opportunity.tagColor.withOpacity(0.3),
+                        color: opportunity.tagColor.withValues(alpha: 0.3),
                       ),
                     ),
                     child: Text(
