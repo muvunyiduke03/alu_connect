@@ -5,6 +5,12 @@ import '../data/mock_opportunities.dart';
 class FeedProvider extends ChangeNotifier {
   final List<OpportunityModel> _opportunities = List.from(mockOpportunities);
   final Set<String> _rsvpdIds = {};
+  final Set<String> _lookingForTeammatesIds = {};
+  final Map<String, List<String>> _teammateSeekers = {
+  'opp6': ['Steve K. - Frontend (Flutter)', 'Joseph M. - Backend (Node.js)'],
+  'opp7': ['Grace U. - UI/UX Design'],
+  'opp9': ['Chinedu A. - Pitch Deck & Finance'],
+  };
   OpportunityType? _selectedFilter;
 
   List<OpportunityModel> get opportunities => List.unmodifiable(_opportunities);
@@ -35,6 +41,25 @@ class FeedProvider extends ChangeNotifier {
     } catch (e) {
       return null;
     }
+  }
+
+  bool isLookingForTeammates(String opportunityId) =>
+    _lookingForTeammatesIds.contains(opportunityId);
+
+  List<String> getTeammateSeekers(String opportunityId) =>
+      _teammateSeekers[opportunityId] ?? [];
+
+  void toggleLookingForTeammates(String opportunityId, String userDisplayEntry) {
+    final seekers = _teammateSeekers.putIfAbsent(opportunityId, () => []);
+
+    if (_lookingForTeammatesIds.contains(opportunityId)) {
+      _lookingForTeammatesIds.remove(opportunityId);
+      seekers.remove(userDisplayEntry);
+    } else {
+      _lookingForTeammatesIds.add(opportunityId);
+      seekers.add(userDisplayEntry);
+    }
+    notifyListeners();
   }
 
   void setFilter(OpportunityType? type) {

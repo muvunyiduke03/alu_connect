@@ -437,7 +437,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             letterSpacing: -0.3,
           ),
         ),
-        if (trailing != null) trailing!,
+        if (trailing != null) trailing,
       ],
     );
   }

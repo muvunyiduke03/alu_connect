@@ -201,6 +201,9 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
               ),
             ),
             const SizedBox(height: 24),
+
+            _buildSquadSection(),
+            const SizedBox(height: 20),
             // Organizer Info
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -354,7 +357,8 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
     required IconData icon,
     required String label,
     required String value,
-  }) {
+  }) 
+  {
     return Row(
       children: [
         Icon(icon, color: AppColors.red, size: 20),
@@ -386,6 +390,197 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
       ],
     );
   }
+
+    Widget _buildSquadSection() {
+    // Only show for hackathons and startups
+    if (opportunity.type != OpportunityType.hackathon &&
+        opportunity.type != OpportunityType.startup) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Consumer<FeedProvider>(
+        builder: (context, feedProvider, _) {
+          final isLooking = feedProvider.isLookingForTeammates(opportunity.id);
+          final seekers = feedProvider.getTeammateSeekers(opportunity.id);
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Find a Squad',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.navyBlue,
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Toggle card
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Looking for teammates?',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.navyBlue,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            isLooking
+                                ? 'You\'re visible to other students'
+                                : 'Let others know you need a team',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.gray,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Switch(
+                      value: isLooking,
+                      activeColor: AppColors.red,
+                      onChanged: (value) {
+                        if (value) {
+                          _showSkillDialog(context, feedProvider);
+                        } else {
+                          feedProvider.toggleLookingForTeammates(
+                            opportunity.id,
+                            '', // not used when turning off
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // List of current seekers
+              if (seekers.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    'No one is looking for teammates yet. Be the first!',
+                    style: const TextStyle(fontSize: 13, color: AppColors.gray),
+                  ),
+                )
+              else
+                ...seekers.map((seeker) {
+                  final parts = seeker.split(' - ');
+                  final name = parts[0];
+                  final skill = parts.length > 1 ? parts[1] : '';
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 16,
+                          backgroundColor: AppColors.red.withValues(alpha: 0.1),
+                          child: Text(
+                            name.isNotEmpty ? name[0] : '?',
+                            style: const TextStyle(
+                              color: AppColors.red,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.navyBlue,
+                                ),
+                              ),
+                              if (skill.isNotEmpty)
+                                Text(
+                                  skill,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.gray,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ],
+          );
+        },
+      ),
+    );
+  }
+  
+  void _showSkillDialog(BuildContext context, FeedProvider feedProvider) {
+  final TextEditingController skillController = TextEditingController();
+  final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+  showDialog(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        title: const Text('What can you bring to a team?'),
+        content: TextField(
+          controller: skillController,
+          decoration: const InputDecoration(
+            hintText: 'e.g. Frontend Development, UI/UX Design',
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final skill = skillController.text.trim();
+              if (skill.isEmpty) return;
+
+              final entry = '${userProvider.user.name} - $skill';
+              feedProvider.toggleLookingForTeammates(opportunity.id, entry);
+              Navigator.pop(dialogContext);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
+            child: const Text('Confirm', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   void _shareOpportunity() {
     ScaffoldMessenger.of(context).showSnackBar(
