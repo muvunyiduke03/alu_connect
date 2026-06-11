@@ -8,6 +8,7 @@ import '../providers/user_provider.dart';
 import '../providers/event_provider.dart';
 import 'settings_screen.dart';
 import '../features/badges/screens/student_badges_screen.dart';
+import '../features/badges/screens/organizer_dashboard_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -206,9 +207,12 @@ class _ProfileScreenState extends State<ProfileScreen>
     UserModel user,
     EventProvider eventProvider,
   ) {
+    final isOrganizer = context.watch<UserProvider>().isOrganizer;
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
+        // ── Organizer Dashboard banner (only for organizers) ──
+        if (isOrganizer) ..._buildOrganizerBanner(context),
         // Bio section
         _sectionHeader('Bio', trailing: GestureDetector(
           onTap: () {
@@ -424,6 +428,125 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
+  // Organizer dashboard entry banner — shown in About tab when role is Organizer/Club Leader
+  List<Widget> _buildOrganizerBanner(BuildContext context) {
+    return [
+      GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const OrganizerDashboardScreen(),
+          ),
+        ),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 20),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF100774), Color(0xFFE65100)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFE65100).withValues(alpha: 0.25),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Stack(
+            children: [
+              // Decorative circles
+              Positioned(
+                right: -20,
+                top: -20,
+                child: Container(
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.07),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: -10,
+                bottom: -15,
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.05),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(
+                        Icons.dashboard_customize_rounded,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Organizer Dashboard',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          SizedBox(height: 3),
+                          Text(
+                            'View RSVPs, mark attendance & broadcast messages',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.white70,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.arrow_forward_rounded,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ];
+  }
+
   Widget _sectionHeader(String title, {Widget? trailing}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -437,7 +560,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             letterSpacing: -0.3,
           ),
         ),
-        if (trailing != null) trailing!,
+        ?trailing,
       ],
     );
   }

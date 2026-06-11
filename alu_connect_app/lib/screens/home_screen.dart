@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import 'feed_screen.dart';
+import 'explore_screen.dart';
 import 'calendar_screen.dart';
 import 'profile_screen.dart';
+import '../features/communities/screens/communities_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,8 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static const List<Widget> _screens = [
     FeedScreen(),
-    _PlaceholderScreen(label: 'Explore', icon: Icons.explore_rounded),
-    _PlaceholderScreen(label: 'Communities', icon: Icons.group_rounded),
+    ExploreScreen(),
+    CommunitiesScreen(),
     CalendarScreen(),
     ProfileScreen(),
   ];
@@ -69,38 +71,3 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _PlaceholderScreen extends StatelessWidget {
-  final String label;
-  final IconData icon;
-
-  const _PlaceholderScreen({required this.label, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.offWhite,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 56, color: AppColors.lightGray),
-            const SizedBox(height: 14),
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: AppColors.navyBlue,
-              ),
-            ),
-            const SizedBox(height: 6),
-            const Text(
-              'Coming soon',
-              style: TextStyle(fontSize: 13, color: AppColors.gray),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

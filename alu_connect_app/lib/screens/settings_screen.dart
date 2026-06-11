@@ -3,11 +3,17 @@ import 'package:provider/provider.dart';
 import '../constants/app_colors.dart';
 import '../providers/user_provider.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
   @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  @override
   Widget build(BuildContext context) {
+    final userProvider = context.watch<UserProvider>();
     return Scaffold(
       backgroundColor: AppColors.offWhite,
       appBar: AppBar(
@@ -46,6 +52,66 @@ class SettingsScreen extends StatelessWidget {
             title: 'Edit Interests',
             onTap: () => _showEditInterestsSheet(context),
           ),
+          const SizedBox(height: 8),
+          _sectionLabel('Role'),
+          // Organizer mode toggle
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ListTile(
+              leading: Icon(
+                Icons.dashboard_customize_rounded,
+                color: userProvider.isOrganizer
+                    ? const Color(0xFFE65100)
+                    : AppColors.navyBlue,
+                size: 22,
+              ),
+              title: const Text(
+                'Organizer Mode',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.navyBlue,
+                ),
+              ),
+              subtitle: Text(
+                userProvider.isOrganizer
+                    ? 'Active — you can manage events & mark attendance'
+                    : 'Enable to access organizer tools',
+                style: const TextStyle(fontSize: 12, color: AppColors.gray),
+              ),
+              trailing: Switch(
+                value: userProvider.isOrganizer,
+                activeThumbColor: const Color(0xFFE65100),
+                onChanged: (val) {
+                  userProvider.updateRole(val ? 'Club Leader' : 'Student');
+                },
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+          if (userProvider.isOrganizer)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline_rounded,
+                      size: 13, color: AppColors.gray),
+                  const SizedBox(width: 6),
+                  const Expanded(
+                    child: Text(
+                      'Your role is now Club Leader. Visit your Profile to open the Organizer Dashboard.',
+                      style: TextStyle(fontSize: 11, color: AppColors.gray, height: 1.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           const SizedBox(height: 8),
           _sectionLabel('App'),
           _tile(

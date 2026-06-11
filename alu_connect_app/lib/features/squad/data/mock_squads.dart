@@ -1,0 +1,136 @@
+import 'package:flutter/material.dart';
+import '../models/squad_model.dart';
+
+final List<SquadPost> mockSquadPosts = [
+  SquadPost(
+    id: 'sq_001',
+    hackathonId: 'hack_001',
+    hackathonTitle: 'ALU Climate Hack 2026',
+    posterName: 'Aline Umuhoza',
+    posterAvatarColor: const Color(0xFF6A1B9A),
+    cohort: 'Kigali 2025',
+    mySkills: ['UI/UX Design', 'Frontend (Web)', 'Graphic Design'],
+    seekingSkills: ['Backend', 'Data Science'],
+    description:
+        'Building a carbon footprint tracker for SMEs in Rwanda. I have the full design system ready, need a backend dev and data person to crunch the emission data.',
+    contactHandle: '@aline.umuhoza',
+    timestamp: DateTime.now().subtract(const Duration(hours: 3)),
+    interestedCount: 7,
+  ),
+  SquadPost(
+    id: 'sq_002',
+    hackathonId: 'hack_001',
+    hackathonTitle: 'ALU Climate Hack 2026',
+    posterName: 'David Nkurunziza',
+    posterAvatarColor: const Color(0xFF1565C0),
+    cohort: 'Kigali 2025',
+    mySkills: ['Backend', 'DevOps / Cloud'],
+    seekingSkills: ['UI/UX Design', 'Business Strategy'],
+    description:
+        'Have a working API that connects with satellite deforestation data. Looking for a designer to make it presentable and someone who can pitch to judges.',
+    contactHandle: '@david.nkuru',
+    timestamp: DateTime.now().subtract(const Duration(hours: 7)),
+    interestedCount: 4,
+  ),
+  SquadPost(
+    id: 'sq_003',
+    hackathonId: 'hack_002',
+    hackathonTitle: 'FinTech Innovation Challenge',
+    posterName: 'Fatima Hassan',
+    posterAvatarColor: const Color(0xFFE65100),
+    cohort: 'Mauritius 2025',
+    mySkills: ['Finance / Pitch Deck', 'Business Strategy', 'Product Management'],
+    seekingSkills: ['Flutter / Mobile', 'Backend'],
+    description:
+        'Working on a micro-savings app for informal traders. Have the financial model and deck. Need engineers to actually build the MVP in 48h.',
+    contactHandle: '@fatima.h',
+    timestamp: DateTime.now().subtract(const Duration(hours: 12)),
+    interestedCount: 11,
+  ),
+  SquadPost(
+    id: 'sq_004',
+    hackathonId: 'hack_002',
+    hackathonTitle: 'FinTech Innovation Challenge',
+    posterName: 'Jean-Paul Hakizimana',
+    posterAvatarColor: const Color(0xFF00695C),
+    cohort: 'Kigali 2024',
+    mySkills: ['Machine Learning', 'Data Science'],
+    seekingSkills: ['Frontend (Web)', 'Marketing'],
+    description:
+        'Training a fraud detection model on synthetic M-Pesa data. Accuracy is at 94% already. Need a front-end and marketing lead to wrap a dashboard around it.',
+    contactHandle: '@jp.haki',
+    timestamp: DateTime.now().subtract(const Duration(days: 1)),
+    interestedCount: 9,
+  ),
+  SquadPost(
+    id: 'sq_005',
+    hackathonId: 'hack_003',
+    hackathonTitle: 'ALU Health Hack',
+    posterName: 'Amara Diallo',
+    posterAvatarColor: const Color(0xFFAD1457),
+    cohort: 'Mauritius 2024',
+    mySkills: ['Research', 'Product Management'],
+    seekingSkills: ['Flutter / Mobile', 'UI/UX Design', 'Backend'],
+    description:
+        'Full-stack health record app for rural clinics. I have done 3 months of field research in Guinea. Need a complete engineering team to prototype.',
+    contactHandle: '@amara.d',
+    timestamp: DateTime.now().subtract(const Duration(days: 2)),
+    interestedCount: 14,
+    isInterested: true,
+  ),
+  SquadPost(
+    id: 'sq_006',
+    hackathonId: 'hack_003',
+    hackathonTitle: 'ALU Health Hack',
+    posterName: 'Chisom Okafor',
+    posterAvatarColor: const Color(0xFF2E7D32),
+    cohort: 'Kigali 2025',
+    mySkills: ['Flutter / Mobile', 'Frontend (Web)'],
+    seekingSkills: ['Research', 'Business Strategy', 'Finance / Pitch Deck'],
+    description:
+        'Can build the app in Flutter in 2 days. Need someone with health domain knowledge and a solid pitch to make judges believe it.',
+    contactHandle: '@chisom.ok',
+    timestamp: DateTime.now().subtract(const Duration(days: 3)),
+    interestedCount: 6,
+  ),
+  SquadPost(
+    id: 'sq_007',
+    hackathonId: 'hack_001',
+    hackathonTitle: 'ALU Climate Hack 2026',
+    posterName: 'Lena Mwangi',
+    posterAvatarColor: const Color(0xFF3949AB),
+    cohort: 'Mauritius 2025',
+    mySkills: ['Hardware / IoT', 'Cybersecurity'],
+    seekingSkills: ['Data Science', 'Business Strategy'],
+    description:
+        'Built a Raspberry Pi sensor network for real-time air quality monitoring. Need data scientist to model the readings and a business lead to structure the go-to-market.',
+    contactHandle: '@lena.mwangi',
+    timestamp: DateTime.now().subtract(const Duration(days: 1, hours: 4)),
+    interestedCount: 5,
+  ),
+];
+
+/// All unique hackathon labels from mock data
+final List<Map<String, dynamic>> mockHackathons = [
+  {
+    'id': 'hack_001',
+    'title': 'ALU Climate Hack 2026',
+    'subtitle': 'Climate & Sustainability',
+    'color': const Color(0xFF2E7D32),
+    'icon': Icons.eco_rounded,
+  },
+  {
+    'id': 'hack_002',
+    'title': 'FinTech Innovation Challenge',
+    'subtitle': 'Finance & Technology',
+    'color': const Color(0xFF1565C0),
+    'icon': Icons.account_balance_rounded,
+  },
+  {
+    'id': 'hack_003',
+    'title': 'ALU Health Hack',
+    'subtitle': 'Healthcare & Access',
+    'color': const Color(0xFFAD1457),
+    'icon': Icons.favorite_rounded,
+  },
+];

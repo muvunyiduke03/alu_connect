@@ -14,6 +14,8 @@ import 'providers/event_provider.dart';
 import 'providers/feed_provider.dart';
 import 'models/opportunity_model.dart';
 import 'features/badges/providers/badges_provider.dart';
+import 'features/communities/providers/community_provider.dart';
+import 'features/squad/providers/squad_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +33,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => EventProvider()),
         ChangeNotifierProvider(create: (_) => FeedProvider()),
         ChangeNotifierProvider(create: (_) => BadgesProvider()),
+        ChangeNotifierProvider(create: (_) => CommunityProvider()),
+        ChangeNotifierProvider(create: (_) => SquadProvider()),
       ],
       child: MaterialApp(
         title: 'ALU Connect',

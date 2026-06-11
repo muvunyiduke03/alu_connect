@@ -12,6 +12,7 @@ class UserProvider extends ChangeNotifier {
   );
 
   UserModel get user => _user;
+  bool get isOrganizer => _user.role == 'Club Leader' || _user.role == 'Organizer';
 
   void setOnboardingData({
     required List<String> interests,
@@ -53,6 +54,11 @@ class UserProvider extends ChangeNotifier {
 
   void updateInterests(List<String> interests) {
     _user.interests = List.from(interests);
+    notifyListeners();
+  }
+
+  void updateRole(String role) {
+    _user.role = role;
     notifyListeners();
   }
 }
