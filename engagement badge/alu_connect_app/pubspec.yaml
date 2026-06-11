@@ -1,0 +1,36 @@
+name: alu_connect_app
+description: "ALU Connect — Campus Life Super-App. Task 3: Proof of Engagement Badges."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Persistence — Task 3 (Badges via SQLite)
+  sqflite: ^2.3.2
+  path: ^1.9.0
+
+  # State management
+  provider: ^6.1.2
+
+  # Date formatting (badge awarded-at display)
+  intl: ^0.19.0
+
+  # UUID generation for badge IDs
+  uuid: ^4.3.3
+
+  # Icons
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
