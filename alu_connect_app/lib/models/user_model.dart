@@ -1,4 +1,5 @@
 class UserModel {
+  String id;
   String name;
   String email;
   String intake;
@@ -7,13 +8,15 @@ class UserModel {
   List<String> interests;
 
   UserModel({
+    String? id,
     required this.name,
     required this.email,
     this.intake = 'S2024',
     this.role = 'Student',
     this.bio = '',
     List<String>? interests,
-  }) : interests = interests ?? [];
+  })  : id = id ?? email,
+        interests = interests ?? [];
 
   String get initials {
     final parts = name.trim().split(' ');

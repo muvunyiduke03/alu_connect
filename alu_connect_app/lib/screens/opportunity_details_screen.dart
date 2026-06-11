@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/feed_provider.dart';
+import '../providers/user_provider.dart';
 import '../models/opportunity_model.dart';
 import '../constants/app_colors.dart';
+import '../features/badges/screens/organizer_attendance_screen.dart';
 
 class OpportunityDetailsScreen extends StatefulWidget {
   final String opportunityId;
@@ -303,6 +305,47 @@ class _OpportunityDetailsScreenState extends State<OpportunityDetailsScreen> {
             const SizedBox(height: 32),
           ],
         ),
+      ),
+      // Floating organizer action: Mark Attendance & Award Badges
+      bottomNavigationBar: Consumer<UserProvider>(
+        builder: (context, userProvider, _) {
+          final isOrganizer = userProvider.user.role == 'Organizer' ||
+              userProvider.user.role == 'Club Leader';
+          if (!isOrganizer) return const SizedBox.shrink();
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => OrganizerAttendanceScreen(
+                        eventId: opportunity.id,
+                        eventName: opportunity.title,
+                        eventType: opportunity.type.name,
+                        organizerName: userProvider.user.name,
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.how_to_reg_rounded, size: 18),
+                label: const Text(
+                  'Mark Attendance & Award Badges',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.navyBlue,
+                  side: const BorderSide(color: AppColors.navyBlue, width: 1.5),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

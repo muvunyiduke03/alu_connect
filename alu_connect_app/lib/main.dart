@@ -13,8 +13,10 @@ import 'providers/user_provider.dart';
 import 'providers/event_provider.dart';
 import 'providers/feed_provider.dart';
 import 'models/opportunity_model.dart';
+import 'features/badges/providers/badges_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => EventProvider()),
         ChangeNotifierProvider(create: (_) => FeedProvider()),
+        ChangeNotifierProvider(create: (_) => BadgesProvider()),
       ],
       child: MaterialApp(
         title: 'ALU Connect',

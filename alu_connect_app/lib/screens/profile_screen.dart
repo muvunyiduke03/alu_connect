@@ -7,6 +7,7 @@ import '../models/user_model.dart';
 import '../providers/user_provider.dart';
 import '../providers/event_provider.dart';
 import 'settings_screen.dart';
+import '../features/badges/screens/student_badges_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -307,8 +308,42 @@ class _ProfileScreenState extends State<ProfileScreen>
               ),
         const SizedBox(height: 24),
 
-        // Badges section
-        _sectionHeader('Badges'),
+        // Gamification Badges section
+        _sectionHeader(
+          'Badges',
+          trailing: TextButton.icon(
+            onPressed: () {
+              final user = context.read<UserProvider>().user;
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => StudentBadgesScreen(
+                    studentId: user.id,
+                    studentName: user.name,
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.workspace_premium_rounded,
+              size: 14,
+              color: AppColors.red,
+            ),
+            label: const Text(
+              'Engagement',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.red,
+              ),
+            ),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+        ),
         const SizedBox(height: 10),
         _buildBadgesGrid(eventProvider.badges),
       ],
@@ -402,7 +437,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             letterSpacing: -0.3,
           ),
         ),
-        ?trailing,
+        if (trailing != null) trailing!,
       ],
     );
   }
