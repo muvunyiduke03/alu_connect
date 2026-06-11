@@ -36,6 +36,10 @@ dependencies:
   table_calendar: ^3.1.2
   intl: ^0.19.0
 
+  # Engagement Badges — SQLite persistence
+  sqflite: ^2.3.2
+  path: ^1.9.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
